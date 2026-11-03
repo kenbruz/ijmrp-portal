@@ -1,0 +1,44 @@
+{% extends "portal/base.html" %}
+{% block title %}Log in - IJMRP{% endblock %}
+{% block width %}auth{% endblock %}
+{% block content %}
+<section class="auth-intro">
+  <h1>See why you match.</h1>
+  <p class="lead">IJMRP scores every job seeker and every job on the skills that matter, then shows how each skill added to the score.</p>
+
+  <figure class="sample">
+    <div class="card tier-high">
+      <div class="m-head">
+        <div>
+          <div class="name">Python Developer</div>
+          <div class="muted">Sample result for one job seeker</div>
+        </div>
+        <div class="score-box">
+          <div class="score">62.7 / 100</div>
+          <span class="tier-label">Strong match</span>
+        </div>
+      </div>
+      <div class="bar"><span style="width: 62.7%"></span></div>
+      <ul class="ladder">
+        <li><span>Python: 31.0 points</span><span class="track"><i style="width: 62%"></i></span></li>
+        <li><span>Django: 22.5 points</span><span class="track"><i style="width: 45%"></i></span></li>
+        <li><span>Git: 9.2 points</span><span class="track"><i style="width: 18.4%"></i></span></li>
+        <li class="missing"><span>SQL: 0.0 points</span><span class="track"></span></li>
+      </ul>
+      <p class="gap">Skills to work on: SQL</p>
+    </div>
+    <figcaption>Employers see candidates ranked this way. Job seekers see the jobs that fit them best and the skills to work on.</figcaption>
+  </figure>
+</section>
+
+<section class="card auth-form">
+  <h1>Log in</h1>
+  <p class="lead">Welcome back.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Log in</button>
+  </form>
+  <p class="muted" style="margin:18px 0 0">No account yet? <a href="{% url 'register' %}">Register</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "portal/base.html" %}
+{% block title %}My profile - IJMRP{% endblock %}
+{% block width %}wide{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'dashboard' %}">Back to dashboard</a>
+<h1>My skill profile</h1>
+<p class="lead">The stronger the evidence for a skill, the more it counts in your match scores.</p>
+{% if request.GET.saved %}
+<p class="success">Profile saved.</p>
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="card">
+    <h2>About you</h2>
+    <p>{{ form.headline.label_tag }} {{ form.headline }} {{ form.headline.errors }}</p>
+    <p>{{ form.cv_file.label_tag }} {{ form.cv_file }} {{ form.cv_file.errors }}</p>
+    <p style="margin-bottom:0">{{ form.portfolio_url.label_tag }} {{ form.portfolio_url }} {{ form.portfolio_url.errors }}</p>
+  </div>
+
+  <div class="card">
+    <h2>My skills</h2>
+    <p class="helptext">Tick each skill you have and choose the evidence that supports it.</p>
+    <table>
+      {% for skill, has_field, evidence_field in form.skill_fields %}
+      <tr>
+        <td style="width:34px">{{ has_field }}</td>
+        <td>{{ skill.name }} <span class="helptext">({{ skill.category }})</span></td>
+        <td>{{ evidence_field }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <button type="submit">Save profile</button>
+</form>
+{% endblock %}

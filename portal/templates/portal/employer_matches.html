@@ -1,0 +1,53 @@
+{% extends "portal/base.html" %}
+{% block title %}Ranked candidates - {{ job.title }}{% endblock %}
+{% block width %}wide{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'my_jobs' %}">Back to my jobs</a>
+<h1>Ranked candidates</h1>
+<p class="sub">
+  {{ job.title }}{% if job.location %}, {{ job.location }}{% endif %}
+</p>
+<div class="card">
+  <strong>Skills required</strong>
+  <div class="chips">
+    {% for req in job.skill_requirements.all %}<span class="chip">{{ req.skill.name }} ({{ req.weight }})</span>{% empty %}<span class="muted">none set</span>{% endfor %}
+  </div>
+</div>
+
+{% for row in rows %}
+<div class="card tier-{% if row.score >= 70 %}high{% elif row.score >= 40 %}mid{% else %}low{% endif %}">
+  <div class="m-head">
+    <div class="who-row">
+      <span class="rank">#{{ row.rank }}</span>
+      <span class="avatar">{{ row.profile.user.username|slice:":1"|upper }}</span>
+      <div>
+        <div class="name">{{ row.profile.user.get_full_name|default:row.profile.user.username }}</div>
+        {% if row.profile.headline %}<div class="muted">{{ row.profile.headline }}</div>{% endif %}
+      </div>
+    </div>
+    <div class="score-box">
+      <div class="score">{{ row.score|stringformat:".1f" }} / 100</div>
+      <span class="tier-label">{% if row.score >= 70 %}Strong match{% elif row.score >= 40 %}Fair match{% else %}Weak match{% endif %}</span>
+    </div>
+  </div>
+  <div class="bar"><span style="width: {{ row.score|stringformat:'.1f' }}%"></span></div>
+  {% if row.profile.cv_file or row.profile.portfolio_url %}
+  <div class="meta">
+    {% if row.profile.cv_file %}<span><a href="{{ row.profile.cv_file.url }}">View CV</a></span>{% endif %}
+    {% if row.profile.portfolio_url %}<span><a href="{{ row.profile.portfolio_url }}">Portfolio</a></span>{% endif %}
+  </div>
+  {% endif %}
+  <p class="ladder-title">How the score is made up:</p>
+  <ul class="ladder">
+    {% for skill, points in row.points.items %}
+      <li{% if points == 0 %} class="missing"{% endif %}><span>{{ skill }}: {{ points|stringformat:".1f" }} points</span><span class="track"><i style="width: calc({{ points|stringformat:'.1f' }}% * 2)"></i></span></li>
+    {% endfor %}
+  </ul>
+  {% if row.gaps %}
+    <p class="gap">Missing: {{ row.gaps|join:", " }}</p>
+  {% endif %}
+</div>
+{% empty %}
+<div class="card empty">No job seekers have registered yet.</div>
+{% endfor %}
+{% endblock %}

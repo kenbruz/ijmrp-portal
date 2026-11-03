@@ -1,0 +1,15 @@
+{% extends "portal/base.html" %}
+{% block title %}Register - IJMRP{% endblock %}
+{% block width %}auth narrow-auth{% endblock %}
+{% block content %}
+<section class="card auth-form">
+  <h1>Create your account</h1>
+  <p class="lead">Choose whether you are an employer or a job seeker.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+  </form>
+  <p class="muted" style="margin:18px 0 0">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+</section>
+{% endblock %}

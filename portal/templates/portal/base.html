@@ -1,0 +1,54 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}IJMRP{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
+        <svg class="logo" viewBox="0 0 34 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="#1d5c4a"/><circle cx="23" cy="11" r="10" fill="#e8a317" fill-opacity=".9" style="mix-blend-mode:multiply"/></svg>
+        IJMRP
+      </a>
+      <nav class="nav">
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+          {% if user.account_type == "employer" %}
+            <a href="{% url 'post_job' %}" class="{% if request.resolver_match.url_name == 'post_job' %}active{% endif %}">Post a job</a>
+            <a href="{% url 'my_jobs' %}" class="{% if request.resolver_match.url_name == 'my_jobs' or request.resolver_match.url_name == 'employer_matches' %}active{% endif %}">My jobs</a>
+          {% endif %}
+          {% if user.account_type == "job_seeker" %}
+            <a href="{% url 'edit_profile' %}" class="{% if request.resolver_match.url_name == 'edit_profile' %}active{% endif %}">My profile</a>
+            <a href="{% url 'job_matches' %}" class="{% if request.resolver_match.url_name == 'job_matches' %}active{% endif %}">My matches</a>
+          {% endif %}
+        {% else %}
+          <a href="{% url 'login' %}" class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">Log in</a>
+          <a href="{% url 'register' %}" class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register</a>
+        {% endif %}
+      </nav>
+      {% if user.is_authenticated %}
+      <div class="userbox">
+        <span class="who"><span class="avatar">{{ user.username|slice:":1"|upper }}</span>{{ user.username }}</span>
+        <span class="role">{{ user.get_account_type_display }}</span>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-link">Log out</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container {% block width %}{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">IJMRP: Intelligent Job Matching and Recruitment Portal</footer>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{% extends "portal/base.html" %}
+{% block title %}Dashboard - IJMRP{% endblock %}
+{% block width %}wide{% endblock %}
+{% block content %}
+<div class="dash-head">
+  <div class="page-head">
+    <h1>Welcome, {{ user.username }}</h1>
+    <span class="badge">{{ user.get_account_type_display }}</span>
+  </div>
+  <p class="lead">You are logged in as: <strong>{{ user.get_account_type_display }}</strong></p>
+</div>
+
+<div class="grid">
+{% if user.account_type == "employer" %}
+  <a class="tile" href="{% url 'post_job' %}">
+    <span class="tile-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></span>
+    <span class="tile-body"><strong>Post a new job</strong><span>Describe the role and set a weight for each skill it needs.</span></span>
+  </a>
+  <a class="tile alt" href="{% url 'my_jobs' %}">
+    <span class="tile-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
+    <span class="tile-body"><strong>View my jobs</strong><span>See your postings and open the ranked candidates for each one.</span></span>
+  </a>
+{% endif %}
+{% if user.account_type == "job_seeker" %}
+  <a class="tile" href="{% url 'edit_profile' %}">
+    <span class="tile-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+    <span class="tile-body"><strong>Edit my skill profile</strong><span>Add your skills and the evidence that supports each one.</span></span>
+  </a>
+  <a class="tile alt" href="{% url 'job_matches' %}">
+    <span class="tile-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+    <span class="tile-body"><strong>My job matches</strong><span>See every posted job ranked by how well you match it.</span></span>
+  </a>
+{% endif %}
+{% if user.is_staff %}
+  <a class="tile alt" href="{% url 'admin:index' %}">
+    <span class="tile-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+    <span class="tile-body"><strong>Open the admin site</strong><span>Manage users, skills, jobs and match scores.</span></span>
+  </a>
+{% endif %}
+</div>
+
+<div class="card howto">
+  <h2>How scores work</h2>
+  <p>Every job seeker and job gets a score from 0 to 100. The score depends on how well the candidate's skills, and the evidence behind them, fit the skills the job asks for. Each result shows how many points every skill added and which skills are missing.</p>
+  <div class="legend">
+    <span class="l-high"><i></i>70 and above: strong match</span>
+    <span class="l-mid"><i></i>40 to 69: fair match</span>
+    <span class="l-low"><i></i>Below 40: weak match</span>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "portal/base.html" %}
+{% block title %}My jobs - IJMRP{% endblock %}
+{% block width %}wide{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'dashboard' %}">Back to dashboard</a>
+<div class="page-head">
+  <h1>My job postings</h1>
+</div>
+<p><a class="btn" href="{% url 'post_job' %}">Post a new job</a></p>
+
+{% for job in jobs %}
+<div class="card">
+  <div class="job-title">{{ job.title }}</div>
+  <div class="meta">
+    {% if job.location %}<span>{{ job.location }}</span>{% endif %}
+    <span>{{ job.get_employment_type_display }}</span>
+    <span>{{ job.date_posted|date:"d M Y" }}</span>
+  </div>
+  <p>{{ job.description|truncatewords:30 }}</p>
+  <div>
+    <strong>Skills:</strong>
+    <div class="chips">
+      {% for req in job.skill_requirements.all %}<span class="chip">{{ req.skill.name }} ({{ req.weight }})</span>{% endfor %}
+    </div>
+  </div>
+  <div class="job-actions">
+    <a class="btn" href="{% url 'employer_matches' job.id %}">View ranked candidates</a>
+  </div>
+</div>
+{% empty %}
+<div class="card empty">You have not posted any jobs yet.</div>
+{% endfor %}
+{% endblock %}

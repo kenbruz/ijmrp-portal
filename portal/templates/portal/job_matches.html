@@ -1,0 +1,48 @@
+{% extends "portal/base.html" %}
+{% block title %}My job matches - IJMRP{% endblock %}
+{% block width %}wide{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'dashboard' %}">Back to dashboard</a>
+<h1>My job matches</h1>
+<p class="sub">Every posted job, ranked by how well your skills and evidence match it.</p>
+
+{% if not has_skills %}
+<div class="notice">You have not added any skills yet, so every score is 0. <a href="{% url 'edit_profile' %}">Add your skills</a> to see real matches.</div>
+{% endif %}
+
+{% for row in rows %}
+<div class="card tier-{% if row.score >= 70 %}high{% elif row.score >= 40 %}mid{% else %}low{% endif %}">
+  <div class="m-head">
+    <div class="who-row">
+      <span class="rank">#{{ row.rank }}</span>
+      <div>
+        <div class="name">{{ row.job.title }}</div>
+        <div class="meta">
+          <span>{{ row.job.employer.get_full_name|default:row.job.employer.username }}</span>
+          {% if row.job.location %}<span>{{ row.job.location }}</span>{% endif %}
+          <span>{{ row.job.get_employment_type_display }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="score-box">
+      <div class="score">{{ row.score|stringformat:".1f" }} / 100</div>
+      <span class="tier-label">{% if row.score >= 70 %}Strong match{% elif row.score >= 40 %}Fair match{% else %}Weak match{% endif %}</span>
+    </div>
+  </div>
+  <div class="bar"><span style="width: {{ row.score|stringformat:'.1f' }}%"></span></div>
+  <p class="ladder-title">How the score is made up:</p>
+  <ul class="ladder">
+    {% for skill, points in row.points.items %}
+      <li{% if points == 0 %} class="missing"{% endif %}><span>{{ skill }}: {{ points|stringformat:".1f" }} points</span><span class="track"><i style="width: calc({{ points|stringformat:'.1f' }}% * 2)"></i></span></li>
+    {% endfor %}
+  </ul>
+  {% if row.gaps %}
+    <p class="gap">Skills to work on: {{ row.gaps|join:", " }}</p>
+  {% else %}
+    <p class="good">You have evidence for every skill this job asks for.</p>
+  {% endif %}
+</div>
+{% empty %}
+<div class="card empty">No jobs have been posted yet.</div>
+{% endfor %}
+{% endblock %}

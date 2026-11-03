@@ -1,0 +1,33 @@
+{% extends "portal/base.html" %}
+{% block title %}Post a job - IJMRP{% endblock %}
+{% block width %}wide{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'dashboard' %}">Back to dashboard</a>
+<h1>Post a job</h1>
+<p class="lead">Describe the role, then say how much each required skill matters.</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="card">
+    <h2>The role</h2>
+    <p>{{ form.title.label_tag }} {{ form.title }} {{ form.title.errors }}</p>
+    <p>{{ form.description.label_tag }} {{ form.description }} {{ form.description.errors }}</p>
+    <p>{{ form.location.label_tag }} {{ form.location }} {{ form.location.errors }}</p>
+    <p style="margin-bottom:0">{{ form.employment_type.label_tag }} {{ form.employment_type }} {{ form.employment_type.errors }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Required skills and weights</h2>
+    <p class="helptext">Enter a weight from 0 to 1 for each skill the job needs, for example 0.30. Leave the others empty.</p>
+    <table>
+      {% for skill, field in form.skill_fields %}
+      <tr>
+        <td>{{ skill.name }} <span class="helptext">({{ skill.category }})</span></td>
+        <td style="width:150px">{{ field }}{{ field.errors }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <button type="submit">Post job</button>
+</form>
+{% endblock %}
