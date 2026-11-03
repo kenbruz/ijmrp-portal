@@ -6,3 +6,4 @@ media/
 portal/templates_backup_*/
 .env
 .vscode/
+config/settings_backup_before_render.py
